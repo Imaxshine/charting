@@ -36,5 +36,19 @@ public function InsertData($name,$email, $tel, $password){
     return 0;
 }
 }
+
+// ================LOGIN=======================
+public function toLogin($name,$password)
+{
+    $name = mysqli_real_escape_string($this->conn, $name);
+    $password = mysqli_real_escape_string($this->conn, $password);
+    $stmt = "SELECT * FROM `users` WHERE `name` = ? AND `password` = ?";
+    $stmt = $this->conn->prepare($stmt);
+    $stmt->bind_param("ss",$name,$password);
+    if ($stmt->execute()){
+      $result = $stmt->get_result();
+      return mysqli_fetch_all($result);
+}
+}
 }
 $my_obj = new Chart("localhost", "root", "", "chart");

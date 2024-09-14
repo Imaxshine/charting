@@ -22,8 +22,8 @@ include_once("mydata.php");
       $toInsert = $my_obj->InsertData($name,$email, $tel, $pass1);
 
       if($toInsert){
-        $welcome = "Congratulation dear " . "<strong>" . ucfirst($name) . "</strong>" . " your registration has been completed successful.Please make sure you are
-         providing your real credentials while sign in.";
+        $welcome = "Congratulation dear " . "<strong>" . ucfirst($name) . "</strong>" . " your registration has been completed successful. Please make sure you are
+         providing your real credentials while log in.";
       }else{
         echo "Failed to insert new data";
       }
@@ -118,7 +118,7 @@ include_once("mydata.php");
               <?php
                 if (!empty($welcome))
                 {
-                  echo $welcome;
+                  echo $welcome . " <a href=\"redirect.php\" class=\"text-danger text-uppercase text-decoration-none\">click to log in</a>";
                 }
               ?>
             </small>

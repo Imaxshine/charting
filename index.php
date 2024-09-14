@@ -1,5 +1,38 @@
 <?php
-    if(isset($_POST[""]))
+session_start();
+include_once("mydata.php");
+    if(isset($_POST["submit"])){
+      $name = $_POST['name'];
+      $password = $_POST['password'];
+      // echo $name . "<br/>" . $password;
+      $users = $my_obj->toLogin($name,$password);
+      foreach($users as $user){
+        $user_id = $user[0];
+        $user_name = $user[1];
+        $user_email = $user[2];
+        $user_phone = $user[3];
+        $user_password = $user[4];
+      }
+    //  $_SESSION['user_id'] = $user_id;
+      if($users){
+        $success = "You are very welcome";
+         $_SESSION['user_id'] = $user_id;
+         $_SESSION['user_name'] = $user_name;
+         ?>
+         <!-- Js redirect -->
+          <script>
+              function toRedirect()
+              {
+                window.location.replace('dash.php');
+              }
+              setTimeout(toRedirect,4000);
+          </script>
+         <?php
+
+      }else{
+        $errors = "Invalid credentials";
+      }
+    }
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -33,9 +66,9 @@
                 <div class="text-center text-uppercase lead">login form</div>
             <form action="#" method="post">
   <div class="mb-3">
-    <label for="exampleInputEmail1" class="form-label">Email address</label>
-    <input type="email" class="form-control" placeholder="example@gmail.com" id="exampleInputEmail1" aria-describedby="emailHelp">
-    <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
+    <label for="exampleInputEmail1" class="form-label">User name</label>
+    <input name="name" type="text" class="form-control" placeholder="Eg. Joe" id="exampleInputEmail1" aria-describedby="emailHelp" required>
+    <!-- <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div> -->
   </div>
 
   <!-- <div class="mb-3">
@@ -45,7 +78,7 @@
 
   <div class="mb-3">
     <label for="exampleInputPassword" class="form-label">Password</label>
-    <input type="password" class="form-control" placeholder="******" name="Pass1" id="exampleInputPassword">
+    <input type="password" class="form-control" placeholder="******" name="password" id="exampleInputPassword" required>
   </div>
 
   <!-- <div class="mb-3">
@@ -68,9 +101,32 @@
   
   <button type="submit" name="submit" class="btn btn-outline-primary text-capitalize w-100">sign in</button>
 </form>
+
+          <div>
+              <small class="my-2 text-danger ms-2">
+                  <?php
+                    if(!empty($errors))
+                    {
+                      echo $errors;
+                    }
+                  ?>
+              </small>
+            </div>
+
+            <div class="text-success text-center">
+              <small>
+                  <?php
+                    if(!empty($success))
+                    {
+                      echo $success;
+                    }
+                  ?>
+              </small>
+            </div>
+
             </div>
             </div>
-        </div>
+          </div>
     </div>
     <!-- Form End -->
   <script src="login.js"></script>  
