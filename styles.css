@@ -1,0 +1,25 @@
+.profile{
+    width: 80px;
+    height: 80px;
+    border-radius: 40px;
+    cursor: pointer;
+}
+.myrow1{
+    /* background-color: #f8c9c9; */
+}
+.usersBody{
+    height: 45vh;
+    overflow-y: scroll;
+}
+.title{
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+.detailesContainer{
+    border-top:  1px solid #aaa;
+    border-bottom:  1px solid #aaa;
+
+}
+.profileTitle{
+    text-transform: capitalize;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+}

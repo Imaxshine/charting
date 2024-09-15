@@ -1,5 +1,5 @@
 const Toviewlogin = document.querySelector('#checkbox, .checkbox');
-
+const hideView = document.querySelector('.checkbox');
 Toviewlogin.onclick = ()=>{
     if (exampleInputPassword.type == "password"){
         exampleInputPassword.type = "text";

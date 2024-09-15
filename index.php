@@ -18,6 +18,8 @@ include_once("mydata.php");
         $success = "You are very welcome";
          $_SESSION['user_id'] = $user_id;
          $_SESSION['user_name'] = $user_name;
+         $_SESSION['user_email'] = $user_email;
+         $_SESSION['user_phone'] = $user_phone;
          ?>
          <!-- Js redirect -->
           <script>
