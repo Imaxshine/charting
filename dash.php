@@ -19,6 +19,9 @@
         .Tohide{
             display: none;
         }
+        .hideLogeduser{
+            display: none;
+        }
      </style>
 </head>
 <body>
@@ -35,7 +38,7 @@
                         <!-- Name -->
                         <div>
                             <p>
-                                <strong class="title text-success">Name: </strong>  <span class="lead"> <?php echo  $_SESSION['user_name'] ?></span>
+                                <strong class="title text-success">Name: </strong>  <span class="lead"> <?php echo  ucfirst($_SESSION['user_name']) ?></span>
                             </p> 
                         </div>
 
@@ -87,17 +90,32 @@ if(isset($_POST['submit'])){
                 while( $data = mysqli_fetch_array($output))
                 {
                     $presentUser = $data['name'];
-                    $presentId = $data['id'];
+                    $presentId = $data['id'];                    
                     ?>
-                        <a href="inbox.php?chart=<?php echo $presentId; ?>" class="list-group-item list-group-item-action text-info"><?php if(!empty($presentUser)){echo $presentUser;}?></a>
-                    
+
+                    <?php
+                    include_once 'encrypt.php';
+                    $id = Encrypting($presentId);
+                    $id2 = base64_encode($id);
+                    // echo $id2;
+                    ?>
+                        <a href="inbox.php?chart=<?php echo $id2; ?>" class="<?php if($_SESSION['user_id'] == $presentId){echo "hideLogeduser";} ?> list-group-item list-group-item-action text-info"><?php 
+                        if($_SESSION['user_name'] ==$presentUser){
+                            echo "";
+                        }else{
+                        if(!empty($presentUser)){echo $presentUser;}
+                        }
+                        ?>
+                    </a>
+                    <!-- Tohide -->
                     <?php
                 }
+                echo "<small class='text-center text-success'>End of results</small>";
                     
                     // $presentUser = $data['name'];
                     
                 }else{
-                    $absentUser = "Sorry the user goes by the name of {$userKind} is not available";
+                    $absentUser = "Sorry, the user goes by the name of {$userKind} is not available";
                 }
 }
 
@@ -116,7 +134,14 @@ if(isset($_POST['submit'])){
                                    $result = $conn->query($stmt);
                                    while ($row = $result->fetch_assoc()){
                                     ?>
-                                    <a href="inbox.php?chart=<?php echo $row['id'] ?>" class="<?php if($_SESSION['user_id'] == $row['id']){echo "Tohide";} ?> list-group-item list-group-item-action"> <?php  $name1 = strtolower($row['name']); echo ucfirst($name1);  ?> </a>
+
+                                    <?php
+                                        include_once 'encrypt.php';
+                                        $id3 = Encrypting($row['id']);
+                                        $id4 = base64_encode($id3);
+                                        // echo $id4;
+                                    ?>
+                                    <a href="inbox.php?chart=<?php echo $id4; ?>" class="<?php if($_SESSION['user_id'] == $row['id']){echo "Tohide";} ?> list-group-item list-group-item-action"> <?php  $name1 = strtolower($row['name']); echo ucfirst($name1);  ?> </a>
                                     
                                     <?php
                                    }

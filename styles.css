@@ -23,3 +23,48 @@
     text-transform: capitalize;
     font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
 }
+/* Send msg */
+.text{
+    max-height: 180px;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+#message{
+    border-bottom: 2px solid black;
+}
+.message-body{
+    overflow-y: scroll;
+}
+.message{
+    border-radius: 10px;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    width: 60%;
+}
+.mybtn a{
+    text-decoration: none;
+}
+.mybtn:hover a{
+    color: white;
+}
+.Toright{
+    float: right;
+    background-color: #85E4B1;
+}
+.Toleft{
+    float: left;
+    background-color: #FFFEFB;
+}
+/* End Send msg */
+/*=======================================  */
+
+/* Msg back ground  Image*/
+#background-img{
+    background-image: url('background/backgr3.jpg');
+    background-position: center;
+    background-size: cover;
+}
+.lineOverTextarea{
+    height: 2px;
+    width: 100%;
+    background: linear-gradient(45deg,#81533c, #2B00D9, #92A37C, #D7312E);
+}
+/* Msg back ground  Image End */
