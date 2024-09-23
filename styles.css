@@ -67,4 +67,13 @@
     width: 100%;
     background: linear-gradient(45deg,#81533c, #2B00D9, #92A37C, #D7312E);
 }
+.time{
+    color: #3d2828;
+    float: right;
+    font-size: 12px;
+}
+.showTime{
+    display: block;
+}
 /* Msg back ground  Image End */
+

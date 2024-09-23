@@ -6,19 +6,21 @@ if (!isset($_SESSION['user_id'])){
     die();
 }else{
 include_once("config.php");
-
 global $terminate;
 // Sender ID
 $sender_id = $_SESSION['user_id'];
 $sender_name = $_SESSION['user_name'];
 // echo $sender_id . "<br/>";
 
- if(isset($_GET['chart']) && !empty($_GET['chart']))
+ if(isset($_GET['chart']))
  {
     include_once('decrypt.php');
     $id = $_GET['chart'];
-    // echo $id . "<br>";
-    echo $_COOKIE['link-id'];
+    if (strlen($id) != 32){
+    header('Location: dash.php');
+    exit;
+
+    }
 $id2 = base64_decode($id);
 // Receiver ID
 $receiver_id = Decrypt($id2);
@@ -39,14 +41,16 @@ if (isset($_POST["send"]))
     if(!empty($message)){
         // SENDING A MESSAGES
         date_default_timezone_set("Africa/Nairobi");
-        $time = date('H:i:s d-m-Y l');
+        $date2 = date('l');
+        $substring = substr($date2,0,4);
+        $time = date('H:i:s d-m-Y') . " " . $substring;
         $sendMessage = "INSERT INTO `messages` (`senderId`,	`receiverId`, `message`, `time`) VALUES (?, ?, ?, ?)";
         $sendMessage = $conn->prepare($sendMessage);
         $sendMessage->bind_param("iiss", $sender_id, $receiver_id, $message, $time);
         if($sendMessage->execute()){
             $popUp = "Message delivered";
         }else{
-            echo "Message failed " . $sendMessage->error;
+            $failed = "Message failed ";
         }
     }else{
         $empty_message = "Create conversation";
@@ -63,6 +67,9 @@ if (isset($_POST["send"]))
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" 
     rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" 
     crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" 
+    integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" 
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 <body class="bg-success" style="height: 100vh;">
     <div class="container">
@@ -78,17 +85,57 @@ if (isset($_POST["send"]))
                                     $readMessage = "SELECT * FROM `messages` WHERE (`senderId`='$sender_id' AND `receiverId`='$receiver_id') OR (`senderId`='$receiver_id' AND `receiverId`='$sender_id')";
                                     $result = $conn->query($readMessage);
                                     if($result->num_rows > 0){
+                                        $i = 1;
                                         while($msg = $result->fetch_assoc()){
                                             $savedSenderId = $msg["senderId"];
-                                             $sender_id;
+                                             $messageId = $i++;
+                                             $msgSentTime = $msg["time"];
+                                             $messageNo = $msg['id'];
+                                            //  echo $messageId;
                                             ?>
                                                 <!-- View Messages body -->
-                                           <p class="<?php if($savedSenderId == $sender_id){echo "Toright";}else{echo "Toleft";} ?> text-dark p-3  message">
-                                            <?php echo $msg['message']; ?>
-                                            </p>
 
+                                           <p id="realMessage" data-message-id="<?php echo $messageId; ?>" class="<?php if($savedSenderId == $sender_id){echo "Toright";}else{echo "Toleft";} ?> text-dark p-3  message">
+                                            <?php echo $msg['message']; ?>
+                                            <br/>
+                                            
+                                            <small style="display: none;" id="time-<?php echo $messageId; ?>" class="time"><?php echo htmlspecialchars($msgSentTime); 
+                                                echo "<br/>";
+                                                // Massage successfully
+                                                if($savedSenderId == $sender_id && !empty($popUp)){
+                                                    echo $popUp;
+                                                }
+                                            ?>
+                                                <!-- Massage failed -->
+                                                 <span class="text-danger">
+                                                    <?php
+                                                        if($savedSenderId == $sender_id && !empty($failed)){  
+                                                            echo $failed;
+                                                        }
+                                                    ?>
+                                                        <!-- Delete msg -->
+                                                    <?php
+                                                        if($savedSenderId == $sender_id){ 
+                                                            include_once"encrypt.php";
+                                                           $msgId1 = Encrypting($messageNo);
+                                                         $msgId2 = base64_encode($msgId1);
+                                                         
+                                                            echo "<a href=\"delete.php?omit=$msgId2\">Delete</a>";
+                                                        }
+                                                    ?>
+                                                    
+                                                 </span>
+                                            </small>     
+                                            </p>
+                                            <!-- Notification -->
                                       <?php 
                                         } 
+                                        ?>
+                                            <!-- <div class="bell">
+                                            <i id="notification" class="fa-solid fa-bell"><sup>2</sup></i>
+                                            </div> -->
+                                           
+                                    <?php    
                                     }
                                   ?>
                             </div>
@@ -133,6 +180,8 @@ if (isset($_POST["send"]))
     //     userTextbody.style.height = "100px";
     // });
 </script>
+<script src="inbox.js"></script>
+<script src="realtime.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" 
 integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" 
 crossorigin="anonymous"></script>

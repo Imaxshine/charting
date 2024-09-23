@@ -1,5 +1,6 @@
 <?php
     session_start();
+    if (isset($_SESSION['user_id'])){
     include_once("config.php");
     global $conn;
     global $absentUser;
@@ -82,8 +83,23 @@
 
 if(isset($_POST['submit'])){
     $userKind = htmlspecialchars(strip_tags($_POST['search']));
+    if($userKind == null){
+        $emptInput = "Enter any name to find";
+        ?>
 
-            $find = "SELECT * FROM `users` WHERE `name` LIKE '%$userKind%' ORDER BY `name` ASC";
+                    <!-- emptInput -->
+                    <p class="text-danger ms-4">
+                                    <?php
+                                      if(!empty($emptInput)){
+                                            echo $emptInput;
+                                            // exit();
+                                        }
+                                    ?>
+                    </p>
+    <?php
+    }else{
+
+        $find = "SELECT * FROM `users` WHERE `name` LIKE '%$userKind%' ORDER BY `name` ASC";
                 $output = $conn->query($find);
                 if(mysqli_num_rows($output) > 0)
                 {
@@ -116,7 +132,12 @@ if(isset($_POST['submit'])){
                     
                 }else{
                     $absentUser = "Sorry, the user goes by the name of {$userKind} is not available";
+
                 }
+
+    }
+
+            
 }
 
                                 ?>
@@ -129,8 +150,9 @@ if(isset($_POST['submit'])){
                                      } 
                                   ?>
                                   </p>
+                                  
                                 <?php
-                                   $stmt = "SELECT * FROM `users`";
+                                   $stmt = "SELECT * FROM `users` ORDER BY RAND()";
                                    $result = $conn->query($stmt);
                                    while ($row = $result->fetch_assoc()){
                                     ?>
@@ -158,3 +180,9 @@ integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIe
 crossorigin="anonymous"></script>
 </body>
 </html>
+<?php
+    }else{
+        header('Location: index.php');
+        exit();
+    }
+    ?>
